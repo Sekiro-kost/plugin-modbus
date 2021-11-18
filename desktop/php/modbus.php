@@ -130,6 +130,11 @@ $eqLogics = eqLogic::byType($plugin->getId());
 											<option value="tcp">{{Modbus TCP}}</option>
 									</select>
 							</div>
+
+							<label class="col-lg-3 control-label" >{{Ip User}}</label>
+							<div class="col-lg-4">
+									<input type="text" id="ipuser" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="ipuser">
+							</div>
 					</div>
 
 

@@ -75,11 +75,11 @@ class modbus extends eqLogic {
      		$return = array();
      		$return['log'] = 'modbus';
      		$return['state'] = 'nok';
-     		$pid_file = jeedom::getTmpFolder(__CLASS__) . '/deamond.pid';
+     		$pid_file = jeedom::getTmpFolder(__CLASS__) . '/deamon.pid';
      		if (file_exists($pid_file)) {
-     		    $pid = trim(file_get_contents($pid_file));
-            if (is_numeric($pid) && posix_getsid($pid)){
-     				     $return['state'] = 'ok';
+          log::add(__CLASS__,'debug','PID EXISTE');
+           if (@posix_getsid(trim(file_get_contents($pid_file)))) {
+                $return['state'] = 'ok';
      			  } else {
      				shell_exec(system::getCmdSudo() . 'rm -rf ' . $pid_file . ' 2>&1 > /dev/null');
      			}
@@ -120,18 +120,18 @@ class modbus extends eqLogic {
                 throw new Exception(__('Veuillez vérifier la configuration', __FILE__));
             }
 
-            $path = realpath(dirname(__FILE__) . '/../../resources/demond');
-            $cmd = '/usr/bin/python3 ' . $path . '/demond.py';
+            $path = realpath(dirname(__FILE__) . '/../../resources/modbusd');
+            $cmd = '/usr/bin/python3 ' . $path . '/modbusd.py';
             $cmd .= ' --loglevel ' . log::convertLogLevel(log::getLogLevel(__CLASS__));
-            $cmd .= ' --socketport ' . config::byKey('socketport', __CLASS__, '50404');
+            $cmd .= ' --socketport ' . config::byKey('socketport', __CLASS__, '55030');
             $cmd .= ' --sockethost 127.0.0.1';
             $cmd .= ' --callback ' . network::getNetworkAccess('internal', 'proto:127.0.0.1:port:comp') . '/plugins/modbus/core/php/jeeModbus.php';
             $cmd .= ' --apikey ' . jeedom::getApiKey(__CLASS__);
-            $cmd .= ' --pid ' . jeedom::getTmpFolder(__CLASS__) . '/deamond.pid';
+            $cmd .= ' --pid ' . jeedom::getTmpFolder(__CLASS__) . '/deamon.pid';
             log::add(__CLASS__, 'info', 'Lancement démon '.$cmd);
             $result = exec($cmd . ' >> ' . log::getPathToLog('modbus') . ' 2>&1 &');
             $i = 0;
-            while ($i < 10) {
+            while ($i < 30) {
                 $deamon_info = self::deamon_info();
                 if ($deamon_info['state'] == 'ok') {
                     break;
@@ -149,12 +149,13 @@ class modbus extends eqLogic {
 
 
   public static function deamon_stop() {
-        $pid_file = jeedom::getTmpFolder(__CLASS__) . '/deamond.pid';
+        $pid_file = jeedom::getTmpFolder(__CLASS__) . '/deamon.pid';
         if (file_exists($pid_file)) {
             $pid = intval(trim(file_get_contents($pid_file)));
             system::kill($pid);
         }
         system::kill('demond.py');
+        system::fuserk(config::byKey('socketport', 'modbus'));
         sleep(1);
     }
 
@@ -163,15 +164,18 @@ class modbus extends eqLogic {
     public static function socketConnection($value){
         $socket = socket_create(AF_INET, SOCK_STREAM, 0);
         socket_set_timeout($socket,180);
-        socket_connect($socket, '127.0.0.1', config::byKey('socketport', 'modbus', 5030));
+        socket_connect($socket, '127.0.0.1', config::byKey('socketport', 'modbus'));
         socket_write($socket, $value, strlen($value));
         socket_close($socket);
     }
 
 
-    public function allowDevice() {
-		$value = array('apikey' => jeedom::getApiKey('modbus'), 'cmd' => 'add');
-		if ($this->getConfiguration('typeOf') == 'rtu') {
+    public function startIp() {
+    $ipUser = $this->getConfiguration('ipuser', 'modbus');
+    log::add(__CLASS__, 'debug', $ipUser);
+		$value = array('apikey' => jeedom::getApiKey('modbus'), 'ip' => $ipUser);
+    self::socketConnection($value);
+	/*	if ($this->getConfiguration('typeOf') == 'rtu') {
 			   $value = json_encode($value);
 			   if (config::byKey('socketport', 'modbusrtu') != '') {
             self::socketConnection($value);
@@ -183,7 +187,7 @@ class modbus extends eqLogic {
     }else{
         log::add(__CLASS__, 'info', 'Vous n\'avez pas choisi le mode de communication Modbus');
 
-    }
+    }*/
 	}
 
 
@@ -216,6 +220,8 @@ class modbus extends eqLogic {
 
  // Fonction exécutée automatiquement après la sauvegarde (création ou mise à jour) de l'équipement
     public function postSave() {
+       log::add(__CLASS__, 'debug', 'POSTSAVE');
+       $this->startIp();
 
     }
 

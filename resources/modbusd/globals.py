@@ -1,0 +1,1 @@
+JEEDOM_SERIAL = ''

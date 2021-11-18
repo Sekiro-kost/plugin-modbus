@@ -1,0 +1,16 @@
+{
+  "uploadOnSave": true,
+  "useAtomicWrites": false,
+  "deleteLocal": false,
+  "hostname": "192.168.1.48",
+  "port": "22",
+  "target": "/var/www/html/plugins/modbus",
+  "ignore": [
+    ".remote-sync.json",
+    ".git/**"
+  ],
+  "username": "root",
+  "password": "Mjeedom96",
+  "watch": [],
+  "transport": "scp"
+}

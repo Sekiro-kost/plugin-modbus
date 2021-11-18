@@ -31,30 +31,12 @@ from pymodbus.constants import Defaults
 from pymodbus.exceptions import *
 from struct import *
 
+
 try:
 	from jeedom.jeedom import *
-except ImportError:
-	print("Error: importing module jeedom.jeedom")
+except ImportError as e:
+	print("Error: importing module jeedom.jeedom" + str(e))
 	sys.exit(1)
-
-
-def connectNewClientTcp(ip):
-	client = ModbusTcpClient(ip)
-	try:
-	    automate = client.read_input_registers()
-	except ConnectionException :
-	    logging.debug("Problème avec automate")
-
-
-#def connectNewClientRTU():
-	#client = ModbusClient(method='rtu', port='', baudrate=, timeout=1)
-	#try:
-		#client.connect()
-		#read = client.read_holding_registers(address =  ,count = ,unit=1)
-		#data = read.registers[id auto]
-		#logging.debug('RESULT DATA'  + data)
-    #except ConnectionException :
-        #logging.debug("Problème avec automate")
 
 
 def read_socket():
@@ -67,8 +49,9 @@ def read_socket():
 			return
 		logging.info('Received command from jeedom : '+str(message['cmd']))
 		try:
-			logging.debug("Read")
-			connectNewClientTcp('127.0.0.1')           
+			logging.debug("coucou")
+			logging.debug(message['ip'])
+			#connectNewClientTcp('127.0.0.1')
 		except Exception as e:
 			logging.error('Send command to demon error : '+str(e))
 
@@ -113,10 +96,10 @@ def shutdown():
 # ----------------------------------------------------------------------------
 
 _log_level = "error"
-_socket_port = 50404
-_socket_host = 'localhost'
+_socket_port = 55030
+_socket_host = '127.0.0.1'
 _device = 'auto'
-_pidfile = '/tmp/jeedom/modbus/deamond.pid'
+_pidfile = '/tmp/modbusd.pid'
 _apikey = ''
 _callback = ''
 
@@ -156,4 +139,5 @@ try:
 	listen()
 except Exception as e:
 	logging.error('Fatal error : '+str(e))
+	logging.debug(traceback.format_exc())
 	shutdown()

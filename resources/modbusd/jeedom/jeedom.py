@@ -30,6 +30,7 @@ from socketserver import (TCPServer, StreamRequestHandler)
 import signal
 import unicodedata
 import pyudev
+import globals
 
 # ------------------------------------------------------------------------------
 

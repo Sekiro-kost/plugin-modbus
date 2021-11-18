@@ -28,7 +28,7 @@ if (!isConnect()) {
       <label class="col-md-4 control-label">{{Socket Port}}
       </label>
       <div class="col-md-4">
-        <input class="configKey form-control" data-l1key="socketPort" value = "5230" placeholder="5230 default"/>
+        <input class="configKey form-control" data-l1key="socketport" placeholder="55030 default"/>
       </div>
     </div>
 

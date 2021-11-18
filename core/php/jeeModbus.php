@@ -25,7 +25,6 @@ require_once __DIR__  . '/../../../../core/php/core.inc.php';
  */
  if (!jeedom::apiAccess(init('apikey'), 'modbus')) {
    echo __('Vous n\'etes pas autorisé à effectuer cette action', __FILE__);
-	log::add('bacnet','debug','Accès interdit core/php/jeemodbus.php');
    die();
  }
 
@@ -36,4 +35,4 @@ require_once __DIR__  . '/../../../../core/php/core.inc.php';
  }
 
 
-/*$result = json_decode(file_get_contents("php://input"), true);*/
+$result = json_decode(file_get_contents("php://input"), true);
