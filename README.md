@@ -1,5 +1,4 @@
 # Template de plugin pour Jeedom
-# nouvelle modif
 
 Ce "template de plugin" sert de base à la réalisation de plugins pour **Jeedom**.
 
