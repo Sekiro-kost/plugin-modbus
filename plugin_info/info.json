@@ -1,0 +1,33 @@
+{
+	"id" : "modbus",
+	"name" : "Modbus",
+	"description" : {
+		"fr_FR": "Plugin Modbus"
+	},
+	"licence" : "AGPL",
+	"author" : "Jeedom SAS",
+	"require" : "4.1.2",
+	"category" : "automation protocol",
+	"hasDependency" : true,
+	"hasOwnDeamon" : true,
+	"maxDependancyInstallTime" : 0,
+	"changelog" : "https://jeedom.github.io/plugin-template/#language#/changelog",
+	"documentation" : "https://jeedom.github.io/plugin-template/#language#/",
+	"link" : {
+		"forum":"Lien vers le forum",
+		"video" : "Lien vers une video"
+	},
+	"language": [
+		"fr_FR",
+		"en_US",
+		"es_ES"
+	],
+	"compatibility": [
+		"miniplus",
+		"smart",
+		"rpi",
+		"diy",
+		"atlas",
+		"v4"
+	]
+}
